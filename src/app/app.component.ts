@@ -6,5 +6,13 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'facebook-scraper';
+  title = 'marketplace-scraper';
+  keyword = '';
+
+  
+  confirmKeyword(){
+    console.log(this.keyword);
+  }
 }
+
+
