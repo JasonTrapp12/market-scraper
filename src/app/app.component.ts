@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { KeywordService } from './keywordService';
+import { Listing } from './listing.model';
 
 @Component({
   selector: 'app-root',
@@ -11,11 +12,13 @@ export class AppComponent {
 
   title = 'marketplace-scraper';
   keyword = '';
-
+  listings: Listing[] = [];
 
   confirmKeyword() {
     this.keywordService.sendKeyword(this.keyword).subscribe(data=>{
-      console.log(data)
+      console.log(data);
+      this.listings = data;
+      console.log(this.listings)
     })
   }
 }

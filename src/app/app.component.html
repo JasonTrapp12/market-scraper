@@ -1,3 +1,9 @@
 <label for="keyword">Keyword:</label>
 <input type="text" id="keyword" name="keyword" [(ngModel)]="keyword">
 <button (click)="confirmKeyword()">Go</button>
+
+<div *ngFor="let listing of listings">
+    <h3>{{ listing.title }}</h3>
+    <img [src]="listing.image" alt="Listing Image">
+    <p>{{ listing.price }}</p>
+  </div>

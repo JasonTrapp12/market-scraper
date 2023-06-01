@@ -5,6 +5,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,7 +21,9 @@ public class ScraperService {
 
   public List<Listing> scrape(String keyword){
     System.setProperty("webdriver.chrome.driver","C:\\Users\\sowwe\\chromedriver.exe");
-    ChromeDriver driver = new ChromeDriver();
+    ChromeOptions options = new ChromeOptions();
+    options.addArguments("--headless");
+    ChromeDriver driver = new ChromeDriver(options);
     driver.get(marketplaceURL + keyword);
     String page = driver.getPageSource();
 
