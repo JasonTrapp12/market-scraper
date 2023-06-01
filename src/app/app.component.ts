@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { KeywordService } from './keywordService';
 
 @Component({
   selector: 'app-root',
@@ -6,12 +7,16 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  constructor(private keywordService: KeywordService){}
+
   title = 'marketplace-scraper';
   keyword = '';
 
-  
-  confirmKeyword(){
-    console.log(this.keyword);
+
+  confirmKeyword() {
+    this.keywordService.sendKeyword(this.keyword).subscribe(data=>{
+      console.log(data)
+    })
   }
 }
 
