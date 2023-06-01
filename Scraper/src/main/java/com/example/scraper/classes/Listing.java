@@ -4,11 +4,13 @@ public class Listing {
   private String title;
   private String price;
   private String image;
+  private String link;
 
-  public Listing(String title, String price, String image){
+  public Listing(String title, String price, String image, String link){
     this.title = title;
     this.price = price;
     this.image = image;
+    this.link = link;
   }
 
   public String getTitle() {
@@ -33,5 +35,13 @@ public class Listing {
 
   public void setImage(String image) {
     this.image = image;
+  }
+
+  public String getLink() {
+    return link;
+  }
+
+  public void setLink(String link) {
+    this.link = link;
   }
 }

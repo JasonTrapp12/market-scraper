@@ -21,6 +21,11 @@ export class AppComponent {
       console.log(this.listings)
     })
   }
+
+  goToLink(url: string){
+    window.open(url, "_blank");
+}
+
 }
 
 
