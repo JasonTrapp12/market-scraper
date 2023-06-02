@@ -1,0 +1,11 @@
+.listing-title {
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+.everything-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }

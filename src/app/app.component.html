@@ -1,10 +1,20 @@
+<div class="everything-container">
+<h1>Ocean County, NJ Facebook Marketplace Scraper</h1>
+<p>
+    Returns 'Keyword' related Facebook Marketplace listings posted within the last 24h 
+</p>
 <label for="keyword">Keyword:</label>
 <input type="text" id="keyword" name="keyword" [(ngModel)]="keyword">
 <button (click)="confirmKeyword()">Go</button>
 
 <div *ngFor="let listing of listings">
-    <h3>{{ listing.title }}</h3>
-    <img [src]="listing.image" alt="Listing Image">
-    <p>{{ listing.price }}</p>
-    <a [href]="listing.link" target="_blank">{{ listing.link }}</a>
-  </div>
+    <div class="listing-container" >
+        <a [href]="listing.link" target="_blank" class="listing-title">{{ listing.title }}</a>
+        <img [src]="listing.image" alt="Listing Image">
+        <p>{{ listing.price }}</p>
+    </div>
+    
+</div>
+</div>
+
+    
