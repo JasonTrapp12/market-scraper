@@ -7,14 +7,21 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ScraperService {
+  @Autowired
+  private ResourceLoader resourceLoader;
   private String marketplaceURL;
+  private String oceanCountyCities;
 
   public ScraperService(){
     //this.marketplaceURL = "https://www.facebook.com/marketplace/112762132070166/search?daysSinceListed=1&deliveryMethod=local_pick_up&query=";
@@ -40,13 +47,14 @@ public class ScraperService {
         String priceString = "price";
         String imageSrc = "img";
         String link = "link";
+        String location = "location";
         Element title = element.selectFirst("span.x1lliihq.x6ikm8r.x10wlt62.x1n2onr6");
         if(title != null){
           titleString = title.text();
         }
-        Element price = element.selectFirst("span.x193iq5w.xeuugli.x13faqbe.x1vvkbs.x1xmvt09.x1lliihq.x1s928wv.xhkezso.x1gmr53x.x1cpjm7i.x1fgarty.x1943h6x.xudqn12.x676frb.x1lkfr7t.x1lbecb7.x1s688f.xzsf02u");
-        if (price != null) {
-          priceString = price.text();
+        Element priceElement = element.selectFirst("span.x193iq5w.xeuugli.x13faqbe.x1vvkbs.x1xmvt09.x1lliihq.x1s928wv.xhkezso.x1gmr53x.x1cpjm7i.x1fgarty.x1943h6x.xudqn12.x676frb.x1lkfr7t.x1lbecb7.x1s688f.xzsf02u");
+        if (priceElement != null) {
+          priceString = priceElement.text();
         }
         Element imageElement = element.selectFirst("img.xt7dq6l.xl1xv1r.x6ikm8r.x10wlt62.xh8yej3");
         if (imageElement != null) {
@@ -57,8 +65,35 @@ public class ScraperService {
           link = linkElement.attr("href");
           link = "https://facebook.com" + link;
         }
-        Listing listing = new Listing(titleString,priceString,imageSrc,link);
-        listings.add(listing);
+        Element locationElement = element.selectFirst("span.x1lliihq.x6ikm8r.x10wlt62.x1n2onr6.xlyipyv.xuxw1ft.x1j85h84");
+        if(locationElement != null){
+          location = locationElement.text();
+        }
+        //if(location.endsWith("NJ")){
+        //  Listing listing = new Listing(titleString,priceString,imageSrc,link);
+        //  listings.add(listing);
+        //}
+        try{
+        boolean inOceanCounty = false;
+        Resource resource = resourceLoader.getResource("classpath:Ocean_County.txt");
+        InputStream inputStream = resource.getInputStream();
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        String town = bufferedReader.readLine();
+          while(town != null){
+            if(town.equals(location)){
+              inOceanCounty = true;
+              break;
+            }
+            town = bufferedReader.readLine();
+          }
+          if(inOceanCounty){
+          Listing listing = new Listing(titleString,priceString,imageSrc,link);
+          listings.add(listing);
+        }
+
+        }catch (IOException e) {
+           e.printStackTrace();
+        }
       }
     }
     return listings;
