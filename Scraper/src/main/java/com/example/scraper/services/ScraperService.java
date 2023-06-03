@@ -37,13 +37,12 @@ public class ScraperService {
     ChromeOptions options = new ChromeOptions().addArguments("--headless");;
     ChromeDriver driver = new ChromeDriver(options);
     driver.get(marketplaceURL + keyword);
-    //driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(7));
     ((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight)");
-    try{Thread.sleep(7000);}
-    catch(InterruptedException e){
-      e.printStackTrace();
+    //try{Thread.sleep(5000);}
+    //catch(InterruptedException e){
+    //  e.printStackTrace();
 
-    }
+    //}
     String page = driver.getPageSource();
 
     Document doc = Jsoup.parse(page);
