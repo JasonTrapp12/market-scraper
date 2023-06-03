@@ -5,16 +5,20 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class ScraperService {
@@ -30,10 +34,16 @@ public class ScraperService {
 
   public List<Listing> scrape(String keyword){
     WebDriverManager.chromedriver().setup();
-    ChromeOptions options = new ChromeOptions();
-    options.addArguments("--headless");
+    ChromeOptions options = new ChromeOptions().addArguments("--headless");;
     ChromeDriver driver = new ChromeDriver(options);
     driver.get(marketplaceURL + keyword);
+    //driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(7));
+    ((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight)");
+    try{Thread.sleep(7000);}
+    catch(InterruptedException e){
+      e.printStackTrace();
+
+    }
     String page = driver.getPageSource();
 
     Document doc = Jsoup.parse(page);
@@ -45,20 +55,22 @@ public class ScraperService {
       if(!element.text().equals("")){
         String titleString = "title";
         String priceString = "price";
-        String imageSrc = "img";
+        String imageString = "img";
         String link = "link";
         String location = "location";
         Element title = element.selectFirst("span.x1lliihq.x6ikm8r.x10wlt62.x1n2onr6");
         if(title != null){
           titleString = title.text();
+          System.out.println("Title: " + titleString);
         }
         Element priceElement = element.selectFirst("span.x193iq5w.xeuugli.x13faqbe.x1vvkbs.x1xmvt09.x1lliihq.x1s928wv.xhkezso.x1gmr53x.x1cpjm7i.x1fgarty.x1943h6x.xudqn12.x676frb.x1lkfr7t.x1lbecb7.x1s688f.xzsf02u");
         if (priceElement != null) {
           priceString = priceElement.text();
+          System.out.println("Price: " + priceString);
         }
         Element imageElement = element.selectFirst("img.xt7dq6l.xl1xv1r.x6ikm8r.x10wlt62.xh8yej3");
         if (imageElement != null) {
-          imageSrc = imageElement.attr("src");
+          imageString = imageElement.attr("src");
         }
         Element linkElement = element.selectFirst("a.x1i10hfl.xjbqb8w.x6umtig.x1b1mbwd.xaqea5y.xav7gou.x9f619.x1ypdohk.xt0psk2.xe8uvvx.xdj266r.x11i5rnm.xat24cr.x1mh8g0r.xexx8yu.x4uap5.x18d9i69.xkhd6sd.x16tdsg8.x1hl2dhg.xggy1nq.x1a2a7pz.x1heor9g.x1lku1pv");
         if (linkElement != null) {
@@ -68,6 +80,7 @@ public class ScraperService {
         Element locationElement = element.selectFirst("span.x1lliihq.x6ikm8r.x10wlt62.x1n2onr6.xlyipyv.xuxw1ft.x1j85h84");
         if(locationElement != null){
           location = locationElement.text();
+          System.out.println("Location " + location);
         }
         //if(location.endsWith("NJ")){
         //  Listing listing = new Listing(titleString,priceString,imageSrc,link);
@@ -87,7 +100,7 @@ public class ScraperService {
             town = bufferedReader.readLine();
           }
           if(inOceanCounty){
-          Listing listing = new Listing(titleString,priceString,imageSrc,link);
+          Listing listing = new Listing(titleString,priceString,imageString,link);
           listings.add(listing);
         }
 
@@ -96,6 +109,7 @@ public class ScraperService {
         }
       }
     }
+    driver.quit();
     return listings;
   }
 }
